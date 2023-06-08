@@ -36,13 +36,12 @@ function fastIntersection(tags, desc, from, once, loop, need) {
         const pin = {};
         let minMax = 0n; // min 中的最大值
         let maxMin = 0n; // max 中的最小值
-        for (let tag of tags) {
+        for (const tag of tags) {
             if (!val[tag] || !val[tag].length) { // 缓存为空
                 val[tag] = DB[tag].filter(el => el >= from).slice(0, once);
             } else if (val[tag].length !== once) { // 缓存补充（已有足量数据就不查了）
                 console.log(tag + ':继续');
-                let idx = val[tag].indexOf(from); // Demo Temp
-                val[tag].push(...DB[tag].filter(el => el >= from).slice(idx, idx + once - val[tag].length)); // 查询数量 = 每次查询数量 - 已有长度。
+                val[tag].push(...DB[tag].filter(el => el >= from).slice(0, once - val[tag].length)); // 查询数量 = 每次查询数量 - 已有长度。
             }
             // 任何 len 为 0 则返回空结果，停止轮询。
             if (val[tag].length === 0) { return { "res": res, "end": from, "ver": "A" }; }
@@ -56,7 +55,7 @@ function fastIntersection(tags, desc, from, once, loop, need) {
             if (maxMin === 0n || max[tag] < maxMin) { maxMin = max[tag]; }
             // 初始化指针
             pin[tag] = 0;
-        };
+        }
         from = maxMin;
         console.log('-------------------------');
         console.log(val);
@@ -69,17 +68,18 @@ function fastIntersection(tags, desc, from, once, loop, need) {
             let jarMin = 0n;
             let jarMax = 0n;
             let hit = false;
-            for (let tag in val) {
+            for (const tag in val) {
                 jar[tag] = val[tag][pin[tag]];
                 if (jarMin === 0n || jar[tag] < jarMin) { jarMin = jar[tag]; }
                 if (jarMax === 0n || jar[tag] > jarMax) { jarMax = jar[tag]; }
             }
             if (jarMin === jarMax) {
+                // 此处加入过滤方法，检查是否存在排除
                 res.push(jarMin);
                 if (need >= 0 && res.length >= need) { loop = 0; }
                 hit = true;
             }
-            for (let tag in pin) {
+            for (const tag in pin) {
                 if (hit || jar[tag] === jarMin) { pin[tag]++; }
                 if (pin[tag] === val[tag].length) { // 超出数组长度
                     run = false;
@@ -97,7 +97,7 @@ function fastIntersection(tags, desc, from, once, loop, need) {
         }
         // 循环末尾，如果依旧有 loop 次数，则求缓存数据
         if (loop === 0) { continue; }
-        for (let tag in pin) {
+        for (const tag in pin) {
             // 已缓存或某个标签 min 大于 maxMin，则 val 保留全部数据（下次直接不用查了）
             if (pin[tag] < 0 || min[tag] > maxMin) { continue; }
             // 用二分法求剩余数组
