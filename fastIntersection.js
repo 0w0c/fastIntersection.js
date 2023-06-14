@@ -1,4 +1,3 @@
-// https://measurethat.net/Benchmarks/Show/7075/0/array-slice-vs-for-loop
 const DB = {
     "Z1": [1n, 2n, 3n, 4n, 5n, 6n, 7n, 8n, 9n, 77n, 99n, 100n, 105n],
     "Z2": [7n, 8n, 9n, 10n, 12n, 18n, 19n, 20n, 21n, 77n, 88n, 99n, 100n, 105n, 109n, 116n, 200n],
@@ -137,6 +136,5 @@ function fastIntersection(tags, desc, from, once, loop, need, wipe = function (p
     return { "res": res, "end": from };
 }
 console.log(fastIntersection(["Z1", "Z2", "Z3"], false, 0n, 3, 5, 10));
-// console.log(fastIntersection(["Z1", "Z2", "Z3"], true, 0n, 3, 5, 10));
-// console.log(fastIntersection(["Z1", "Z2", "Z3"], false, 0n, 3, 99, 4));
+// console.log(fastIntersection(["Z1", "Z2", "Z3"], true, 0n, 3, 99, 4));
 // console.log(fastIntersection(["Z1", "Z2", "Z3"], false, 0n, 3, 99, 4, function (pre) { return pre.filter(n => n != 77n); }));
